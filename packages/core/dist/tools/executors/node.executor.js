@@ -57,9 +57,38 @@ export class NodeSandboxExecutor {
             }
             const tempDir = path.join(os.tmpdir(), "nekora_sandbox");
             await fs.mkdir(tempDir, { recursive: true });
-            const ext = language === "javascript" ? "js" : language === "typescript" ? "ts" : "py";
+            let codeToExecute = code;
+            let ext = "js";
+            if (language === "typescript") {
+                try {
+                    const ts = await import("typescript");
+                    const transpileFn = ts.transpileModule || ts.default?.transpileModule;
+                    if (typeof transpileFn === "function") {
+                        const transpiled = transpileFn(code, {
+                            compilerOptions: {
+                                module: ts.ModuleKind?.CommonJS || 1,
+                                target: ts.ScriptTarget?.ES2022 || 99,
+                                removeComments: false,
+                            },
+                        });
+                        codeToExecute = transpiled.outputText;
+                    }
+                }
+                catch {
+                    codeToExecute = code
+                        .replace(/:\s*(string|number|boolean|any|void|unknown|never|object|Record<[^>]+>|Array<[^>]+>|[A-Z][a-zA-Z0-9_]*(\[\])?)/g, "")
+                        .replace(/as\s+[A-Za-z0-9_<>{}[\]]+/g, "");
+                }
+                ext = "js";
+            }
+            else if (language === "javascript") {
+                ext = "js";
+            }
+            else {
+                ext = "py";
+            }
             const filePath = path.join(tempDir, `exec_${Date.now()}_${Math.random().toString(36).substring(2, 6)}.${ext}`);
-            await fs.writeFile(filePath, code, "utf8");
+            await fs.writeFile(filePath, codeToExecute, "utf8");
             let cmd;
             let args;
             if (language === "javascript" || language === "typescript") {
