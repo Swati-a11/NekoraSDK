@@ -1,17 +1,17 @@
 {
   "name": "@nekora-ai/core",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "TypeScript-first, provider-agnostic AI Agent SDK built from scratch for reliable autonomous agents",
   "author": "Nekora AI Team <hello@nekora.ai>",
   "license": "MIT",
-  "homepage": "https://github.com/nekora-ai/nekora-ai#readme",
+  "homepage": "https://github.com/Swati-a11/NekoraSDK#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/nekora-ai/nekora-ai.git",
+    "url": "git+https://github.com/Swati-a11/NekoraSDK.git",
     "directory": "packages/core"
   },
   "bugs": {
-    "url": "https://github.com/nekora-ai/nekora-ai/issues"
+    "url": "https://github.com/Swati-a11/NekoraSDK/issues"
   },
   "type": "module",
   "main": "./dist/index.js",
