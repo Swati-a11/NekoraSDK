@@ -1,48 +1,88 @@
 # Nekora AI Core (@nekora-ai/core)
 
-A TypeScript-first, provider-agnostic AI Agent SDK built from scratch for reliable, production-grade autonomous agents.
+A TypeScript-first, provider-agnostic AI Agent SDK built from scratch for reliable autonomous agents.
 
 ---
 
-## 1. Overview
+## 1. Hero
 
-Nekora AI is an open-source TypeScript framework designed to build stateful, resilient, and observable AI agents. Many agent frameworks introduce high-level abstractions that obfuscate execution loops, lock developers into specific model vendors, or lack runtime safety mechanisms.
+### What is Nekora AI?
 
-Nekora AI is built on a clean architectural foundation with zero framework bloat:
+Nekora AI is a production-ready, TypeScript-native framework for building, running, and observing autonomous AI agents. Built from the ground up without heavy third-party framework dependencies, Nekora AI provides deterministic execution loops, multi-provider model switching, cognitive memory management, type-safe tool calling, and human-in-the-loop safety controls.
 
-- **Stateful Runtime Isolation**: Every agent execution runs within an isolated execution context with thread-safe tracing, memory, and usage tracking.
-- **Provider Agnostic**: Native support for OpenAI, Anthropic Claude, Google Gemini, Groq, and OpenRouter, plus customizable Fallback chains.
-- **Multi-Layer Cognitive Memory**: Short-Term sliding memory, Working Memory task tracking, and Long-Term Memory with importance decay and conflict resolution.
-- **Human-in-the-Loop Safety**: Granular risk analysis and asynchronous human approval hooks before executing high-risk tools.
-- **Agent Sandbox Simulation**: Dry-run simulation mode to evaluate tool decisions, risk levels, and timelines before side-effects are applied.
+### Why Developers Choose Nekora AI
+
+Existing agent frameworks often introduce complex abstractions, hidden prompt chains, or tight vendor lock-in. Nekora AI delivers a lightweight, explicit, and fully observable architecture designed specifically for TypeScript applications:
+
+- **Explicit Control Flow**: Every step of the agent execution lifecycle is transparent, customizable, and emitted as typed events.
+- **Provider Agnostic**: Seamlessly switch between OpenAI, Anthropic Claude, Google Gemini, Groq, and OpenRouter, or build automated multi-provider fallback chains.
+- **Production Safety**: Native guardrails, granular risk analysis, dry-run simulation mode, and human approval hooks prevent unexpected side-effects.
+- **Multi-Layer Memory**: Built-in Short-Term sliding window memory, Working Memory task tracking, and Long-Term Memory with temporal decay and conflict resolution.
+- **Full Telemetry**: OpenTelemetry-compatible span tracing, latency tracking, token cost calculations, and structured output repair loops.
+
+### Core Philosophy
+
+1. **Type Safety First**: End-to-end TypeScript types, native Zod schema integration, and zero unsafe casting.
+2. **Zero Hidden Magic**: No black-box prompt engineering or untraceable loops. Every iteration and model response is inspectable.
+3. **Pluggable Architecture**: Modular providers, custom memory adapters, custom tool executors, and extensible plugin middleware.
 
 ---
 
 ## 2. Features
 
-- **Custom Agent Runtime**: Deterministic multi-turn execution engine with iteration limits, timeouts, and structured repair loops.
-- **Multi-Provider Support**:
-  - OpenAI (`OpenAIProvider`)
-  - Anthropic Claude (`ClaudeProvider`)
-  - Google Gemini (`GeminiProvider`)
-  - Groq (`GroqProvider`)
-  - OpenRouter (`OpenRouterProvider`)
-  - Fallback Provider (`FallbackProvider`)
-- **Type-Safe Tool System**: Tool definitions built with Zod schema inference, permission requirements, and execution sandboxing.
-- **Advanced Code Execution**: `CodingTool` supporting sandboxed execution of JavaScript, TypeScript, and Python with pre-execution syntax validation.
-- **Neko Cognitive Memory**: Multi-tiered memory engine featuring Short-Term Memory (STM), Working Memory, and Long-Term Memory (LTM) decay and conflict resolution.
-- **Human Approval Layer**: Risk analyzer categorizing actions (`LOW`, `MEDIUM`, `HIGH`) with `agent.onApprovalRequest()` interceptors.
-- **Dry-Run Sandbox Simulation**: `agent.simulate()` previews predicted tool calls and risk profiles with zero real side-effects.
-- **Real-Time Event Streaming**: Native `AsyncIterator` streaming (`agent.stream()`) emitting lifecycle events (`run.started`, `model.started`, `token.generated`, `tool.started`, `tool.completed`, `run.completed`).
-- **Guardrail Pipeline**: Pre-execution input validation, tool verification, and output sanitization with PII redaction.
-- **OpenTelemetry-Style Tracing**: Built-in `Tracer` recording execution spans, tool latencies, model call metrics, and error stack traces.
-- **Reliability Utilities**: Automatic exponential retry backoff (`withRetry`) and global call timeout protection (`withTimeout`).
+### Agent Runtime Engine
+The core execution engine (`NekoraExecutionEngine`) coordinates the multi-turn agent loop. It manages iteration boundaries, token limits, system instruction composition, tool dispatching, and error recovery.
+
+### Multi-Provider Architecture
+Switch model backends with zero code refactoring:
+- **OpenAI**: `OpenAIProvider` (`gpt-4o`, `gpt-4o-mini`)
+- **Google Gemini**: `GeminiProvider` (`gemini-2.0-flash`, `gemini-1.5-pro`)
+- **Anthropic Claude**: `ClaudeProvider` (`claude-3-5-sonnet-20241022`, `claude-3-haiku-20240307`)
+- **Groq**: `GroqProvider` (`llama-3.3-70b-versatile`, `mixtral-8x7b-32768`)
+- **OpenRouter**: `OpenRouterProvider` (Access 300+ models via OpenRouter API)
+- **Fallback Provider**: `FallbackProvider` (Automatic failover between primary and secondary providers)
+
+### Tool Calling System
+Define tools with Zod schema validation. Tools support permission tags, execution timeouts, and human approval requirements.
+
+### Advanced Sandbox Code Execution
+The `CodingTool` and `NodeSandboxExecutor` enable isolated execution of JavaScript, TypeScript, and Python code snippets with pre-execution syntax validation and execution timeouts.
+
+### Neko Cognitive Memory System
+A 3-layer cognitive memory architecture:
+- **Short-Term Memory (STM)**: Session message history with sliding window context management.
+- **Working Memory**: Active goals, constraints, and transient task state.
+- **Long-Term Memory (LTM)**: Knowledge base supporting importance scoring, temporal decay, and conflict resolution.
+
+### Session Management
+Stateful session tracking across multi-turn user conversations with automatic history retrieval and persistence adapters (`InMemoryAdapter`, `SQLiteAdapter`).
+
+### Async Iterator Streaming
+Native `AsyncGenerator` response streaming via `agent.stream()`. Emits granular events (`run.started`, `model.started`, `token.generated`, `tool.started`, `tool.completed`, `run.completed`).
+
+### Guardrail Pipeline
+Multi-stage validation pipeline (`GuardrailPipeline`) for input queries, tool calls, and final model outputs. Supports PII redaction and policy enforcement.
+
+### Human Approval System
+Granular risk analyzer categorizing actions into `LOW`, `MEDIUM`, or `HIGH` risk levels. Requires human confirmation (`agent.onApprovalRequest()`) before high-risk tools execute.
+
+### Dry-Run Sandbox Simulation
+Preview predicted tool calls, risk levels, and action timelines without executing real side-effects via `agent.simulate()`.
+
+### Reliability Utilities
+Built-in exponential backoff retry policies (`withRetry`) and request timeout handlers (`withTimeout`).
+
+### Tracing & Telemetry System
+Structured `Tracer` recording execution spans, tool latencies, model token counts, and stack traces per run ID.
+
+### Structured Output Validation
+Validate model outputs against Zod schemas (`options.outputSchema`). Includes automatic JSON extraction from markdown and self-healing repair loops.
 
 ---
 
 ## 3. Installation
 
-Install `@nekora-ai/core` and `zod` using npm or pnpm:
+Install `@nekora-ai/core` and `zod` via npm:
 
 ```bash
 npm install @nekora-ai/core zod
@@ -58,42 +98,31 @@ pnpm add @nekora-ai/core zod
 
 ## 4. Quick Start
 
-Create an agent, configure a tool, and execute a query:
+Create an agent, execute a query, and handle output:
 
 ```typescript
-import { Agent, tool, GroqProvider } from "@nekora-ai/core";
-import { z } from "zod";
+import { Agent, GroqProvider } from "@nekora-ai/core";
 
-// Define a custom tool with Zod schema validation
-const weatherTool = tool({
-  name: "get_weather",
-  description: "Retrieve current weather information for a location",
-  schema: z.object({
-    location: z.string().describe("City or region name"),
-  }),
-  execute: async ({ location }) => {
-    return { location, temperature: "22°C", condition: "Clear" };
-  },
-});
-
-// Initialize model provider and agent
+// Initialize provider
 const model = new GroqProvider({
   apiKey: process.env.GROQ_API_KEY,
   model: "llama-3.3-70b-versatile",
 });
 
+// Initialize agent
 const agent = new Agent({
-  name: "Weather Assistant",
-  instructions: "Answer user questions concisely using available tools.",
+  name: "Assistant Agent",
+  instructions: "You are a helpful AI assistant. Answer user queries accurately.",
   model,
-  tools: [weatherTool],
 });
 
 async function main() {
-  const result = await agent.run("What is the weather in Tokyo?");
-  console.log("Agent Output:", result.output);
-  console.log("Duration (ms):", result.durationMs);
+  const result = await agent.run("Explain the concept of quantum superposition in 2 sentences.");
+
+  console.log("Response:", result.output);
+  console.log("Run ID:", result.runId);
   console.log("Tokens Used:", result.totalTokens);
+  console.log("Duration (ms):", result.durationMs);
 }
 
 main().catch(console.error);
@@ -101,223 +130,353 @@ main().catch(console.error);
 
 ---
 
-## 5. Providers & Fallbacks
+## 5. Provider Usage
 
-Nekora AI provides a unified `ModelProvider` interface. You can switch model providers or set up resilient fallback chains:
+### Google Gemini
 
 ```typescript
-import {
-  Agent,
-  OpenAIProvider,
-  ClaudeProvider,
-  FallbackProvider,
-} from "@nekora-ai/core";
+import { Agent, GeminiProvider } from "@nekora-ai/core";
 
-const primaryModel = new OpenAIProvider({
+const gemini = new GeminiProvider({
+  apiKey: process.env.GEMINI_API_KEY,
+  model: "gemini-2.0-flash",
+});
+
+const agent = new Agent({
+  name: "Gemini Agent",
+  instructions: "You are an assistant powered by Google Gemini.",
+  model: gemini,
+});
+```
+
+### OpenAI
+
+```typescript
+import { Agent, OpenAIProvider } from "@nekora-ai/core";
+
+const openai = new OpenAIProvider({
   apiKey: process.env.OPENAI_API_KEY,
   model: "gpt-4o",
 });
 
-const fallbackModel = new ClaudeProvider({
+const agent = new Agent({
+  name: "OpenAI Agent",
+  instructions: "You are an assistant powered by OpenAI.",
+  model: openai,
+});
+```
+
+### Anthropic Claude
+
+```typescript
+import { Agent, ClaudeProvider } from "@nekora-ai/core";
+
+const claude = new ClaudeProvider({
   apiKey: process.env.ANTHROPIC_API_KEY,
   model: "claude-3-5-sonnet-20241022",
 });
 
-// Automatically switch to fallbackModel if primaryModel fails or rate-limits
-const resilientModel = new FallbackProvider({
-  primary: primaryModel,
-  fallbacks: [fallbackModel],
+const agent = new Agent({
+  name: "Claude Agent",
+  instructions: "You are an assistant powered by Anthropic Claude.",
+  model: claude,
+});
+```
+
+### Groq
+
+```typescript
+import { Agent, GroqProvider } from "@nekora-ai/core";
+
+const groq = new GroqProvider({
+  apiKey: process.env.GROQ_API_KEY,
+  model: "llama-3.3-70b-versatile",
+});
+
+const agent = new Agent({
+  name: "Groq Agent",
+  instructions: "You are an assistant powered by Groq.",
+  model: groq,
+});
+```
+
+### Resilient Fallback Chain
+
+```typescript
+import { Agent, OpenAIProvider, GroqProvider, FallbackProvider } from "@nekora-ai/core";
+
+const primary = new GroqProvider({ apiKey: process.env.GROQ_API_KEY });
+const secondary = new OpenAIProvider({ apiKey: process.env.OPENAI_API_KEY });
+
+const fallbackModel = new FallbackProvider({
+  primary,
+  fallbacks: [secondary],
 });
 
 const agent = new Agent({
   name: "Resilient Agent",
-  instructions: "Process critical system tasks with automatic failover.",
-  model: resilientModel,
+  instructions: "Automatically fall back if primary provider fails.",
+  model: fallbackModel,
 });
 ```
 
 ---
 
-## 6. Tool System & Code Execution
+## 6. Tool Calling Example
 
-### Custom Tool Definition
+Define a custom tool using Zod validation and attach it to an agent:
 
 ```typescript
-import { tool } from "@nekora-ai/core";
+import { Agent, tool, GroqProvider } from "@nekora-ai/core";
 import { z } from "zod";
 
-const databaseTool = tool({
-  name: "query_database",
-  description: "Execute read-only SQL query against production replica",
-  permissions: ["db:read"],
+// Define custom tool
+const calculatorTool = tool({
+  name: "calculator",
+  description: "Perform basic mathematical operations",
   schema: z.object({
-    query: z.string().describe("SQL query string"),
+    operation: z.enum(["add", "subtract", "multiply", "divide"]),
+    a: z.number(),
+    b: z.number(),
   }),
-  execute: async ({ query }) => {
-    return { rows: [{ id: 1, name: "Alice" }] };
+  execute: async ({ operation, a, b }) => {
+    switch (operation) {
+      case "add": return { result: a + b };
+      case "subtract": return { result: a - b };
+      case "multiply": return { result: a * b };
+      case "divide": return { result: b !== 0 ? a / b : "Error: Division by zero" };
+    }
   },
 });
-```
 
-### Advanced Coding Tool
-
-Execute sandboxed code across multiple programming languages with pre-execution syntax validation:
-
-```typescript
-import { CodingTool } from "@nekora-ai/core";
-
-const codingTool = new CodingTool();
-
-// Execute TypeScript code
-const result = await codingTool.execute({
-  language: "typescript",
-  code: "const sum: number = 10 + 20; console.log(sum);",
-  timeout: 3000,
+const agent = new Agent({
+  name: "Math Agent",
+  instructions: "Use the calculator tool to solve math problems.",
+  model: new GroqProvider({ apiKey: process.env.GROQ_API_KEY }),
+  tools: [calculatorTool],
 });
 
-console.log(result.success); // true
-console.log(result.output);  // "30"
+async function main() {
+  const result = await agent.run("Calculate 42 multiplied by 18");
+  console.log("Result:", result.output);
+}
+
+main().catch(console.error);
 ```
 
 ---
 
-## 7. Neko Cognitive Memory System
+## 7. Memory Example
 
-Nekora includes a multi-layered cognitive memory architecture:
-
-1. **Short-Term Memory (STM)**: Session message history with sliding window context management.
-2. **Working Memory**: Active goal state and transient decisions.
-3. **Long-Term Memory (LTM)**: Knowledge base supporting importance scoring, temporal decay, and conflict resolution.
+Store long-term facts and run multi-turn sessions with Neko Cognitive Memory:
 
 ```typescript
-import { Agent, NekoCognitiveMemory } from "@nekora-ai/core";
+import { Agent, NekoCognitiveMemory, GroqProvider } from "@nekora-ai/core";
 
 const memory = new NekoCognitiveMemory();
 
-// Store long-term preference with importance weighting
+// Store long-term knowledge
 memory.remember(
   "user_preference",
-  "programming_language",
-  "TypeScript",
-  "User prefers TypeScript for full-stack development",
-  { importance: 0.95, confidence: 0.98 }
+  "theme",
+  "dark_mode",
+  "User prefers dark mode interfaces",
+  { importance: 0.9, confidence: 0.95 }
 );
 
 const agent = new Agent({
-  name: "Cognitive Assistant",
-  instructions: "Personalize responses based on stored memories.",
+  name: "Memory Agent",
+  instructions: "Personalize responses based on user context.",
+  model: new GroqProvider({ apiKey: process.env.GROQ_API_KEY }),
   memory,
 });
 
-// Inspect stored memory structures
-console.log(agent.memory.inspect());
+async function main() {
+  const sessionId = "user_session_1";
+
+  // First turn
+  await agent.run("My name is Alice.", { sessionId });
+
+  // Second turn - retrieves previous context
+  const response = await agent.run("What is my name?", { sessionId });
+  console.log("Response:", response.output);
+
+  // Inspect memory state
+  console.log("Cognitive Memory Report:", agent.memory.inspect());
+}
+
+main().catch(console.error);
 ```
 
 ---
 
-## 8. Human-in-the-Loop Approval & Sandbox Simulation
+## 8. Streaming Example
 
-### Human Approval Callback
-
-Intercept risky actions before execution:
+Stream real-time tokens and lifecycle events:
 
 ```typescript
+import { Agent, GroqProvider } from "@nekora-ai/core";
+
 const agent = new Agent({
-  name: "Operations Agent",
-  instructions: "Perform infrastructure maintenance.",
-  tools: [databaseTool],
+  name: "Streaming Agent",
+  instructions: "Write a creative short story.",
+  model: new GroqProvider({ apiKey: process.env.GROQ_API_KEY }),
 });
 
-// Register human approval callback
-agent.onApprovalRequest(async (request) => {
-  console.log(`Approval Requested for tool '${request.toolName}'`);
-  console.log(`Risk Level: ${request.riskLevel}`);
-  console.log(`Arguments:`, request.args);
+async function main() {
+  console.log("Streaming response:\n");
 
-  // Return true to grant execution, or false to reject
+  for await (const event of agent.stream("Write a 3-sentence story about space exploration.")) {
+    if (event.type === "token.generated") {
+      process.stdout.write(event.token);
+    } else if (event.type === "tool.started") {
+      console.log(`\nTool Executing: ${event.toolName}`);
+    } else if (event.type === "run.completed") {
+      console.log("\n\nStream Finished.");
+    }
+  }
+}
+
+main().catch(console.error);
+```
+
+---
+
+## 9. Guardrails Example
+
+Validate input queries and sanitize output responses:
+
+```typescript
+import { Agent, GuardrailPipeline, GroqProvider } from "@nekora-ai/core";
+
+const guardrails = new GuardrailPipeline();
+
+// Input guardrail: block prompt injection keywords
+guardrails.addInputGuardrail({
+  name: "injection_prevention",
+  validate: async (input) => {
+    if (input.toLowerCase().includes("ignore previous instructions")) {
+      return { isValid: false, reason: "Prompt injection attempt detected." };
+    }
+    return { isValid: true };
+  },
+});
+
+// Output guardrail: redact sensitive email patterns
+guardrails.addOutputGuardrail({
+  name: "email_redaction",
+  validate: async (output) => {
+    const redacted = output.replace(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g, "[REDACTED_EMAIL]");
+    return { isValid: true, content: redacted };
+  },
+});
+
+const agent = new Agent({
+  name: "Secure Agent",
+  instructions: "Provide customer assistance.",
+  model: new GroqProvider({ apiKey: process.env.GROQ_API_KEY }),
+  guardrails,
+});
+```
+
+---
+
+## 10. Human Approval Example
+
+Require human authorization before executing sensitive or high-risk tools:
+
+```typescript
+import { Agent, tool, GroqProvider } from "@nekora-ai/core";
+import { z } from "zod";
+
+const deleteTableTool = tool({
+  name: "delete_table",
+  description: "Delete a database table",
+  permissions: ["db:write", "file:delete"],
+  requireApproval: true,
+  schema: z.object({ tableName: z.string() }),
+  execute: async ({ tableName }) => ({ status: "deleted", tableName }),
+});
+
+const agent = new Agent({
+  name: "Admin Agent",
+  instructions: "Perform database administration.",
+  model: new GroqProvider({ apiKey: process.env.GROQ_API_KEY }),
+  tools: [deleteTableTool],
+});
+
+// Register human approval handler
+agent.onApprovalRequest(async (request) => {
+  console.log(`Approval Request ID: ${request.id}`);
+  console.log(`Tool: ${request.toolName} (Risk: ${request.riskLevel})`);
+  console.log(`Reason: ${request.reason}`);
+
+  // Return true to authorize, false to reject
   return true;
 });
 ```
 
-### Sandbox Simulation Mode
-
-Dry-run an input query to evaluate planned tool calls and risk levels without executing side-effects:
-
-```typescript
-const simulation = await agent.simulate("Drop database table users");
-
-console.log("Risk Level:", simulation.riskLevel); // "HIGH"
-console.log("Actions Planned:", simulation.plannedActions);
-console.log("Timeline Steps:", simulation.timeline);
-```
-
 ---
 
-## 9. Real-Time Streaming
-
-Stream events and tokens using an `AsyncIterator`:
-
-```typescript
-for await (const event of agent.stream("Explain machine learning concepts")) {
-  if (event.type === "token.generated") {
-    process.stdout.write(event.token);
-  } else if (event.type === "tool.started") {
-    console.log(`\nTool Started: ${event.toolName}`);
-  } else if (event.type === "run.completed") {
-    console.log("\nRun Completed.");
-  }
-}
-```
-
----
-
-## 10. Architecture Overview
+## 11. Architecture Overview
 
 ```text
-+-----------------------------------------------------------------------+
-|                              Nekora Agent                             |
-|  +-------------------+  +-------------------+  +-------------------+  |
-|  |   Model Provider  |  |  Cognitive Memory |  |  Approval Manager |  |
-|  +---------+---------+  +---------+---------+  +---------+---------+  |
-+------------|----------------------|----------------------|------------+
-             |                      |                      |
-             v                      v                      v
-+-----------------------------------------------------------------------+
-|                         Nekora Execution Engine                       |
-|                                                                       |
-|   1. Context Init    ->  2. Memory Context  ->  3. Model Execution    |
-|   4. Guardrail Check ->  5. Risk Analysis   ->  6. Tool Dispatch    |
-|   7. Usage Tracking  ->  8. Span Telemetry  ->  9. Output Validation|
-+-----------------------------------------------------------------------+
-             |                      |                      |
-             v                      v                      v
-+-----------------------+ +-------------------+ +-----------------------+
-| Provider Integrations | |  Sandbox Executor | | EventEmitter / Stream |
-+-----------------------+ +-------------------+ +-----------------------+
++-------------------------------------------------------------------------+
+|                              Nekora Agent                               |
+|  +---------------------+  +---------------------+  +------------------+ |
+|  |    Model Provider   |  |   Cognitive Memory  |  | Approval Manager | |
+|  +----------+----------+  +----------+----------+  +--------+---------+ |
++-------------|------------------------|----------------------|-----------+
+              |                        |                      |
+              v                        v                      v
++-------------------------------------------------------------------------+
+|                          Nekora Execution Engine                        |
+|                                                                         |
+|   1. Context Init    -->  2. Memory Context   -->  3. Model Execution   |
+|   4. Guardrail Check -->  5. Risk Evaluation  -->  6. Tool Dispatch     |
+|   7. Usage Tracking  -->  8. Telemetry Spans  -->  9. Output Check    |
++-------------------------------------------------------------------------+
+              |                        |                      |
+              v                        v                      v
++------------------------+ +--------------------+ +-----------------------+
+|  Provider Integrations | |  Sandbox Executor  | | EventEmitter / Stream |
++------------------------+ +--------------------+ +-----------------------+
 ```
 
----
+### Architectural Components
 
-## 11. Roadmap
-
-- **Distributed Memory Adapters**: Redis and Vector DB (pgvector, Pinecone) adapters for long-term memory.
-- **Docker & E2B Code Sandboxes**: First-class remote sandbox executors for isolated code execution environments.
-- **Multi-Agent Orchestrator Graphs**: DAG-based workflow execution and multi-agent coordination pipelines.
-- **OpenTelemetry Exporter**: Native export of trace spans to Jaeger, Zipkin, and Datadog.
-
----
-
-## 12. Contributing
-
-Contributions are welcome. Please follow these guidelines:
-
-1. Fork the repository and create a feature branch (`git checkout -b feature/my-feature`).
-2. Ensure all unit tests pass: `pnpm test`.
-3. Ensure the workspace builds cleanly: `pnpm build`.
-4. Submit a detailed Pull Request describing your changes.
+- **Agent (`Agent`)**: The user-facing configuration interface defining identity, instructions, tools, memory, and model bindings.
+- **Runtime (`NekoraRuntime` & `NekoraExecutionEngine`)**: Thread-safe execution engine driving the multi-turn iteration loop, error handling, and timeout limits.
+- **Providers (`ModelProvider`)**: Abstraction layer converting standard `Message[]` inputs into provider-specific payloads.
+- **Tools (`Tool`)**: Executable units with Zod schema validation, permission checks, and execution providers.
+- **Memory (`MemoryAdapter` & `NekoCognitiveMemory`)**: Multi-tiered state storage handling short-term history, working goals, and long-term knowledge decay.
+- **Guardrails (`GuardrailPipeline`)**: Pipeline executing validation rules across input, tool, and output phases.
+- **Tracing (`Tracer`)**: OpenTelemetry-style span collector recording execution graphs and latency metrics.
 
 ---
 
-## 13. License
+## 12. Roadmap
+
+- **CLI Initialization Suite**: Scaffolding templates (`npx nekora init`) with preset configurations.
+- **Extended Provider Ecosystem**: Native adapters for Cohere, Mistral, Ollama, and AWS Bedrock.
+- **Agent Graph Orchestration**: DAG-based multi-agent coordination pipelines with conditional branching.
+- **Distributed Memory Adapters**: Redis, PostgreSQL (pgvector), and Pinecone vector store integrations.
+- **Cloud Dashboard & Telemetry Exporter**: OpenTelemetry span exporters for Jaeger, Datadog, and Grafana Tempo.
+
+---
+
+## 13. Contributing
+
+Contributions to Nekora AI are welcome. Please follow these steps to contribute:
+
+1. Fork the repository: `https://github.com/Swati-a11/NekoraSDK`.
+2. Create a feature branch: `git checkout -b feature/my-feature`.
+3. Ensure all tests pass: `pnpm test`.
+4. Ensure the workspace builds cleanly: `pnpm build`.
+5. Submit a pull request with a description of your changes.
+
+---
+
+## 14. License
 
 [MIT](LICENSE) © Nekora AI Team
