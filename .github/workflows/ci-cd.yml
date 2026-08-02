@@ -36,4 +36,4 @@ jobs:
         run: pnpm test
 
       - name: Validate NPM Packaging (Dry Run)
-        run: pnpm --filter @nekora-ai/core pack
+        run: cd packages/core && pnpm pack
