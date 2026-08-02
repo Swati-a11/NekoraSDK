@@ -1,0 +1,1 @@
+{"version":3,"file":"types.js","sourceRoot":"","sources":["../../packages/core/src/handoff/types.ts"],"names":[],"mappings":"AA6BA,MAAM,OAAO,gBAAiB,SAAQ,KAAK;IACb;IAA5B,YAA4B,KAAe;QACzC,KAAK,CAAC,0CAA0C,KAAK,CAAC,IAAI,CAAC,MAAM,CAAC,EAAE,CAAC,CAAC;QAD5C,UAAK,GAAL,KAAK,CAAU;QAEzC,IAAI,CAAC,IAAI,GAAG,kBAAkB,CAAC;IACjC,CAAC;CACF"}

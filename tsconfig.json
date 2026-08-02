@@ -1,0 +1,35 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+
+    "rootDir": "./packages/core/src",
+    "outDir": "./dist",
+
+    "types": ["node"],
+
+    "sourceMap": true,
+    "declaration": true,
+    "declarationMap": true,
+
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": false,
+
+    "verbatimModuleSyntax": false,
+    "isolatedModules": true,
+    "moduleDetection": "force",
+
+    "skipLibCheck": true
+  },
+
+  "include": [
+    "packages/core/src"
+  ],
+
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
+}

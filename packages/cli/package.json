@@ -1,0 +1,21 @@
+{
+  "name": "nekora",
+  "version": "1.0.0",
+  "description": "CLI tool for Nekora AI SDK project initialization",
+  "bin": {
+    "nekora": "./bin/nekora.js"
+  },
+  "main": "./dist/index.js",
+  "type": "module",
+  "scripts": {
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@nekora-ai/core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^24.13.3",
+    "typescript": "^5.9.3"
+  },
+  "license": "MIT"
+}

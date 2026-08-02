@@ -1,0 +1,39 @@
+name: Nekora AI CI/CD Pipeline
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  lint-build-test:
+    name: Build & Test SDK
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9
+
+      - name: Setup Node.js 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "pnpm"
+
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build Packages
+        run: pnpm build
+
+      - name: Run Test Suite
+        run: pnpm test
+
+      - name: Validate NPM Packaging (Dry Run)
+        run: pnpm --filter @nekora-ai/core pack

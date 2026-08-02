@@ -1,0 +1,35 @@
+{
+  "name": "nekora-ai",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A TypeScript-first, provider-agnostic AI Agent SDK",
+  "type": "module",
+  "scripts": {
+    "build": "pnpm -r build",
+    "test": "pnpm -r test",
+    "dev": "pnpm --parallel --filter @nekora-ai/server --filter @nekora-ai/playground dev",
+    "dev:server": "pnpm --filter @nekora-ai/server dev",
+    "dev:playground": "pnpm --filter @nekora-ai/playground dev",
+    "start:server": "pnpm --filter @nekora-ai/server start"
+  },
+  "keywords": [
+    "ai",
+    "agent",
+    "sdk",
+    "llm",
+    "typescript"
+  ],
+  "author": "Swati Kumari",
+  "license": "MIT",
+  "packageManager": "pnpm@11.18.0",
+  "dependencies": {
+    "@nekora-ai/core": "workspace:*",
+    "dotenv": "^16.4.5",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^26.1.2",
+    "tsx": "^4.23.1",
+    "typescript": "^7.0.2"
+  }
+}

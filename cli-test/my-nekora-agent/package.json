@@ -1,0 +1,18 @@
+{
+  "name": "my-nekora-agent",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx src/index.ts",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@nekora-ai/core": "workspace:*",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.9.0"
+  }
+}

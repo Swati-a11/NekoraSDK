@@ -1,0 +1,49 @@
+{
+  "name": "@nekora-ai/server",
+  "version": "1.0.0",
+  "description": "Express HTTP and SSE server backend for Nekora AI Agent Runtime and Sandbox Code Execution",
+  "author": "Nekora AI Team <hello@nekora.ai>",
+  "license": "MIT",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./server": {
+      "types": "./dist/server.d.ts",
+      "import": "./dist/server.js",
+      "default": "./dist/server.js"
+    },
+    "./services": {
+      "types": "./dist/services/index.d.ts",
+      "import": "./dist/services/index.js",
+      "default": "./dist/services/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx watch src/index.ts",
+    "start": "node dist/index.js",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@nekora-ai/core": "workspace:*",
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/node": "^24.13.3",
+    "@types/supertest": "^6.0.2",
+    "supertest": "^7.0.0",
+    "typescript": "^5.9.3",
+    "vitest": "^2.1.8"
+  }
+}

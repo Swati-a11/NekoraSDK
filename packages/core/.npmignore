@@ -1,0 +1,11 @@
+.env
+.env.*
+*.env
+*.log
+src/
+src/tests/
+tsconfig.json
+vitest.config.ts
+*.tsbuildinfo
+*.map
+node_modules/
