@@ -34,7 +34,9 @@ export function getEnvVar(key) {
  * Resolve explicit or default ModelProvider based on environment configuration or provider instance.
  */
 export function resolveDefaultProvider(modelInput) {
-    if (typeof modelInput === "object" && modelInput !== null && "generate" in modelInput) {
+    if (typeof modelInput === "object" &&
+        modelInput !== null &&
+        ("generateResponse" in modelInput || "generate" in modelInput)) {
         return modelInput;
     }
     const modelStr = typeof modelInput === "string" ? modelInput.toLowerCase().trim() : "";

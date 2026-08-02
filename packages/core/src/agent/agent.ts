@@ -48,7 +48,11 @@ export function getEnvVar(key: string): string {
  * Resolve explicit or default ModelProvider based on environment configuration or provider instance.
  */
 export function resolveDefaultProvider(modelInput?: ModelProvider | string): ModelProvider {
-  if (typeof modelInput === "object" && modelInput !== null && "generate" in modelInput) {
+  if (
+    typeof modelInput === "object" &&
+    modelInput !== null &&
+    ("generateResponse" in modelInput || "generate" in modelInput)
+  ) {
     return modelInput;
   }
 
