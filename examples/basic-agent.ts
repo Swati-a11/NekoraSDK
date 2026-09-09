@@ -17,7 +17,7 @@ const model = new GroqProvider({
 
 // 2. Initialize Nekora Agent
 const agent = new Agent({
-  name: "Assistant Agent",
+  name: "Mochii",
   instructions: "You are a concise, helpful AI assistant. Answer user queries accurately.",
   model,
 });
